@@ -6,16 +6,14 @@ import { Zap, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
-export function RunNowButton() {
+export function RunNowButton({ disabled = false }: { disabled?: boolean }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
   async function handleRun() {
     setLoading(true);
-    toast({ title: "🚀 Pipeline started!", description: "Watch the progress cards below..." });
-
-    // Refresh page so pipeline card appears immediately
+    toast({ title: "🚀 Pipeline started!", description: "Watch the progress cards update live..." });
     router.refresh();
 
     try {
@@ -23,19 +21,12 @@ export function RunNowButton() {
       const data = await res.json();
 
       if (data.success) {
-        toast({
-          title: "✅ Video uploaded!",
-          description: data.youtubeUrl ?? "Check YouTube for your video",
-        });
+        toast({ title: "✅ Video uploaded!", description: data.youtubeUrl ?? "Check YouTube" });
       } else {
-        toast({
-          variant: "destructive",
-          title: "❌ Pipeline failed",
-          description: data.error ?? "Unknown error",
-        });
+        toast({ variant: "destructive", title: "❌ Failed", description: data.error ?? "Unknown error" });
       }
-    } catch {
-      toast({ variant: "destructive", title: "Request failed", description: "Could not reach the server" });
+    } catch (e) {
+      toast({ variant: "destructive", title: "Request failed", description: String(e) });
     } finally {
       setLoading(false);
       router.refresh();
@@ -43,18 +34,9 @@ export function RunNowButton() {
   }
 
   return (
-    <Button onClick={handleRun} disabled={loading} size="lg" className="gap-2">
-      {loading ? (
-        <>
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Pipeline Running...
-        </>
-      ) : (
-        <>
-          <Zap className="h-4 w-4" />
-          Trigger Run Now
-        </>
-      )}
+    <Button onClick={handleRun} disabled={loading || disabled} size="lg">
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+      {loading ? "Running..." : "Trigger Run Now"}
     </Button>
   );
 }
