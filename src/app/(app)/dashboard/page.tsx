@@ -3,8 +3,7 @@ import { StatsCards } from "@/components/dashboard/stats-cards";
 import { HistoryTable } from "@/components/dashboard/history-table";
 import { RunNowButton } from "@/components/dashboard/run-now-button";
 import { PipelineProgress } from "@/components/dashboard/pipeline-progress";
-import { Zap, Settings } from "lucide-react";
-import Link from "next/link";
+import { Zap } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -24,14 +23,6 @@ export default async function DashboardPage() {
     logs = data ?? [];
   }
 
-  const { data: settings } = await admin
-    .from("user_settings")
-    .select("youtube_channel_id, auto_upload_enabled, gemini_api_key, youtube_refresh_token")
-    .eq("user_id", userId)
-    .single();
-
-  const isReady = !!(settings?.gemini_api_key && settings?.youtube_refresh_token);
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -47,28 +38,8 @@ export default async function DashboardPage() {
             AI-powered YouTube Shorts automation
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          {!isReady && (
-            <Link href="/settings"
-              className="flex items-center gap-1.5 text-xs text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 rounded-md px-3 py-1.5 hover:bg-yellow-400/20 transition-colors">
-              <Settings className="h-3.5 w-3.5" />
-              Setup required
-            </Link>
-          )}
-          <RunNowButton disabled={!isReady} />
-        </div>
+        <RunNowButton />
       </div>
-
-      {/* Not configured warning */}
-      {!isReady && (
-        <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-4 py-3 text-sm text-yellow-400">
-          ⚠️ Pipeline not ready — go to{" "}
-          <Link href="/settings" className="underline font-medium">Settings</Link>{" "}
-          to connect your API keys and YouTube channel, or hit{" "}
-          <a href="/api/debug" target="_blank" className="underline font-medium">/api/debug</a>{" "}
-          to auto-configure from environment variables.
-        </div>
-      )}
 
       {/* Stats */}
       <StatsCards logs={logs} />

@@ -6,7 +6,7 @@ import { Zap, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
-export function RunNowButton({ disabled = false }: { disabled?: boolean }) {
+export function RunNowButton() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -34,7 +34,7 @@ export function RunNowButton({ disabled = false }: { disabled?: boolean }) {
   }
 
   return (
-    <Button onClick={handleRun} disabled={loading || disabled} size="lg">
+    <Button onClick={handleRun} disabled={loading} size="lg">
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
       {loading ? "Running..." : "Trigger Run Now"}
     </Button>

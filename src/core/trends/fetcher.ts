@@ -19,9 +19,14 @@ async function fetchGoogleTrends(geo = "US"): Promise<string[]> {
   const text = await res.text();
 
   // Simple regex extraction — no xml2js needed
-  const titles = [...text.matchAll(/<title><!\[CDATA\[([^\]]+)\]\]><\/title>/g)]
-    .map((m) => m[1])
-    .filter((t) => t && t !== "Daily Search Trends");
+  const titles: string[] = [];
+  let match;
+  const regex = /<title><!\[CDATA\[([^\]]+)\]\]><\/title>/g;
+  while ((match = regex.exec(text)) !== null) {
+    if (match[1] && match[1] !== "Daily Search Trends") {
+      titles.push(match[1]);
+    }
+  }
 
   return titles.slice(0, 20);
 }

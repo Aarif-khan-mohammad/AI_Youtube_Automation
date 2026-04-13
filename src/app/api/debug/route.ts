@@ -30,7 +30,7 @@ export async function GET() {
     // 4. Check Python backend
     let pythonStatus = "❌ not running";
     try {
-      const r = await fetch("http://localhost:8000/health", { signal: AbortSignal.timeout(3000) });
+      const r = await fetch("http://localhost:8001/health", { signal: AbortSignal.timeout(3000) });
       const d = await r.json();
       pythonStatus = d.status === "ok" ? `✅ running — ffmpeg: ${d.ffmpeg}` : "⚠️ " + JSON.stringify(d);
     } catch { pythonStatus = "❌ not running — start with: python -m uvicorn backend.main:app --port 8000 --reload"; }

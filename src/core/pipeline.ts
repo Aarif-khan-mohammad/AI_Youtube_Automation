@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase-server";
 import type { PipelineResult, UserSettings } from "@/types";
 import fs from "fs";
 
-const PYTHON_API = "http://localhost:8000";
+const PYTHON_API = "http://localhost:8001";
 
 // ── Main Pipeline ─────────────────────────────────────────────
 export async function runAutomationPipeline(userId: string): Promise<PipelineResult> {
