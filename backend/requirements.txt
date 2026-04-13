@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+edge-tts
+httpx
+aiofiles
+python-multipart
+pydantic
+ffmpeg-python
