@@ -66,7 +66,7 @@ export async function runAutomationPipeline(userId: string): Promise<PipelineRes
     // Step 6: Refresh YouTube token + upload
     await updateVideoJob(jobId, { status: "uploading" });
     const freshTokens = await refreshAccessToken(settings.youtube_refresh_token);
-    await upsertYouTubeTokens(freshTokens, settings.youtube_channel_id ?? "");
+    await upsertYouTubeTokens(freshTokens, settings.youtube_channel_id ?? "", userId);
 
     const youtubeUrl = await uploadToYouTube(
       { videoPath: video_path, title: content.title, description: content.description, tags: content.tags, categoryId: "27" },

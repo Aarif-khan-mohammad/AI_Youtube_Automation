@@ -6,12 +6,18 @@ import type { UserSettings, VideoLog, VideoStatus, YouTubeTokens } from "@/types
 // ============================================================
 // Upsert YouTube OAuth tokens for the authenticated user
 // ============================================================
-export async function upsertYouTubeTokens(tokens: YouTubeTokens, channelId: string) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated");
+export async function upsertYouTubeTokens(tokens: YouTubeTokens, channelId: string, userId?: string) {
+  const admin = createAdminClient();
 
-  const { error } = await supabase
+  // If no userId passed, get first user
+  let uid = userId;
+  if (!uid) {
+    const { data: users } = await admin.auth.admin.listUsers();
+    uid = users.users[0]?.id;
+  }
+  if (!uid) throw new Error("No user found");
+
+  const { error } = await admin
     .from("user_settings")
     .update({
       youtube_access_token: tokens.access_token,
@@ -19,7 +25,7 @@ export async function upsertYouTubeTokens(tokens: YouTubeTokens, channelId: stri
       youtube_token_expiry: new Date(tokens.expiry_date).toISOString(),
       youtube_channel_id: channelId,
     })
-    .eq("user_id", user.id);
+    .eq("user_id", uid);
 
   if (error) throw new Error(error.message);
 }
