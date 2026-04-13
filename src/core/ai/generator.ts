@@ -63,7 +63,7 @@ export async function generateVideoScript(
   apiKey: string
 ): Promise<GeneratedContent> {
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   // Find matching pillar or use niche directly
   const pillar = CONTENT_PILLARS.find((p) => p.niche === niche) ?? {
